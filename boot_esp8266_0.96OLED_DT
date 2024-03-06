@@ -1,0 +1,37 @@
+import socket
+import network
+import esp
+esp.osdebug(None)
+import gc
+
+gc.collect()
+from machine import Pin, I2C
+from ssd1306 import SSD1306_I2C
+import urequests
+import utime
+
+def init_oled(): # funtion for the led
+    i2c = I2C(Pin(14), Pin(12))
+    oled = SSD1306_I2C(128, 64, i2c)
+    return oled
+
+def get_datetime(): # function for date and time
+    ntp_server = "pool.ntp.org"
+    response = urequests.get("http://worldtimeapi.org/api/ip")
+    data = response.json()
+    return data["datetime"]
+
+ssid = 'Input your wifi name here''
+password = 'Input your wifi password here'
+
+station = network.WLAN(network.STA_IF)
+station.active(True)
+station.connect(ssid, password)
+print('Connection successful')
+print(station.ifconfig())
+
+import webrepl_setup
+
+if __name__ == "__main__":
+    main()
+    
